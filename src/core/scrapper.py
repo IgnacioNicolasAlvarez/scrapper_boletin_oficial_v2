@@ -1,18 +1,20 @@
-from bs4 import BeautifulSoup
 from datetime import datetime
+
 import requests
+from bs4 import BeautifulSoup
+
 
 today = datetime.today().strftime("%Y-%m-%d")
 url = "https://boletin.tucuman.gov.ar/boletin/view"
-
-payload = f"fechaBoletin={today}"
 
 headers = {
     "Content-Type": "application/x-www-form-urlencoded",
 }
 
 
-def run():
+def run(fecha: str = today):
+    payload = f"fechaBoletin={fecha}"
+
     response = requests.request("POST", url, headers=headers, data=payload)
     soup = BeautifulSoup(response.text, "html.parser")
 
