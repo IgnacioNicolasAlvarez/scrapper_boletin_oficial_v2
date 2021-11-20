@@ -18,12 +18,12 @@ headers = {
 
 
 def run(fecha: str = today):
+    loggear(mensaje="Iniciando scrapper", tipo="info")
 
     payload = f"fechaBoletin={fecha}"
     response = requests.request("POST", url, headers=headers, data=payload)
 
-    soup = BeautifulSoup(response.text)
-
+    soup = BeautifulSoup(response.text, features="html.parser")
     notices = soup.find_all("article", class_="blog-post")[1]
 
     titles = notices.findChildren(
@@ -45,4 +45,6 @@ def run(fecha: str = today):
         subtitle = subtitles[i].text.strip()
         body = bodies[i].text.strip()
 
-        insert_advice(nro_aviso, title, subtitle, body)
+        insert_advice(nro_aviso, title, subtitle)
+        
+    loggear(mensaje="Scrapper finalizado", tipo="info")

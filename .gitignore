@@ -3,3 +3,4 @@ venv
 .vscode-test
 __pycache__
 log.log
+data/postgres_/
