@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from ..db.postgre import insert_advice
 from ..utils.conversion import reemplazar
 from ..utils.logger import loggear
-from ..utils.regex import aplicar_regex_title
+from ..utils.regex import aplicar_regex_group, PATTERN_TITULO_ID_AVISO
 
 today = datetime.today().strftime("%Y-%m-%d")
 url = "https://boletin.tucuman.gov.ar/boletin/view"
@@ -39,12 +39,12 @@ def run(fecha: str = today):
     for i in range(len(titles)):
         title = titles[i].text.strip()
 
-        aux = aplicar_regex_title(title)
+        aux = aplicar_regex_group(texto=title, pattern=PATTERN_TITULO_ID_AVISO)
         nro_aviso = reemplazar(aux, ".", "", fuction=int)
 
         subtitle = subtitles[i].text.strip()
         body = bodies[i].text.strip()
 
         insert_advice(nro_aviso, title, subtitle)
-        
+
     loggear(mensaje="Scrapper finalizado", tipo="info")
