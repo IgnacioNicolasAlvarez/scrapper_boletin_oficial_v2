@@ -4,7 +4,7 @@ from logging import log
 import requests
 from bs4 import BeautifulSoup
 
-from ..db.postgre import insert_advice
+from ..db.postgre import insert, Advice_raw
 from ..utils.conversion import reemplazar
 from ..utils.logger import loggear
 from ..utils.regex import aplicar_regex_group, PATTERN_TITULO_ID_AVISO
@@ -19,6 +19,7 @@ headers = {
 
 def run(fecha: str = today):
     loggear(mensaje="Iniciando scrapper", tipo="info")
+    data = []
 
     payload = f"fechaBoletin={fecha}"
     response = requests.request("POST", url, headers=headers, data=payload)
@@ -38,13 +39,17 @@ def run(fecha: str = today):
 
     for i in range(len(titles)):
         title = titles[i].text.strip()
-
-        aux = aplicar_regex_group(texto=title, pattern=PATTERN_TITULO_ID_AVISO)
-        nro_aviso = reemplazar(aux, ".", "", fuction=int)
-
         subtitle = subtitles[i].text.strip()
         body = bodies[i].text.strip()
 
-        insert_advice(nro_aviso, title, subtitle)
+        data.append(Advice_raw(title=title, subtitle=subtitle))
 
-    loggear(mensaje="Scrapper finalizado", tipo="info")
+    return data
+        # aux = aplicar_regex_group(texto=title, pattern=PATTERN_TITULO_ID_AVISO)
+        # nro_aviso = reemplazar(aux, ".", "", fuction=int)
+
+
+
+def save_data(data: list):
+    for i in data:
+        insert(i)

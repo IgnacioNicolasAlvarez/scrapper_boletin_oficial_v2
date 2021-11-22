@@ -12,15 +12,19 @@ class Advice(SQLModel, table=True):
     subtitle: Optional[str] = None
 
 
+class Advice_raw(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    title: Optional[str] = None
+    subtitle: Optional[str] = None
+
 def create_session():
     return Session(bind=engine)
 
 
-def insert_advice(Number, Title, Subtitle):
+def insert(object):
     with create_session() as session:
-        advice = Advice(number=Number, title=Title, subtitle=Subtitle)
-        session.add(advice)
-        loggear(mensaje=f"Aviso {Number} insertado", tipo="info")
+        session.add(object)
+        loggear(mensaje=f"Aviso {object} insertado", tipo="info")
         session.commit()
 
 

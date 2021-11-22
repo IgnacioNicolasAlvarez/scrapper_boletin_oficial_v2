@@ -1,8 +1,8 @@
-from src.core import scrapper
+from src.core.scheduler import run
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
-        scrapper.run('2021-11-16')
+        run("2021-11-16")
     except KeyboardInterrupt:
-        scrapper.stop()
+        exit(1)
