@@ -13,10 +13,13 @@ schedule = IntervalSchedule(
 
 
 @task
-def extract(date):
+def extract(date=None):
     try:
         loggear(mensaje="Iniciando Extraccion", tipo="info")
-        data = scrapper.run(date)
+        if date:
+            data = scrapper.extraer(date)
+        else:
+            data = scrapper.extraer()
         loggear(mensaje="Finalizando Extraccion", tipo="info")
         return data
     except KeyboardInterrupt:
@@ -48,7 +51,7 @@ def load(transformed_data):
         exit(1)
 
 
-def run(date):
+def run(date=None):
 
     with Flow("Scrapper Boletin Oficial", schedule=schedule) as flow:
         result_extract = extract(date=date)

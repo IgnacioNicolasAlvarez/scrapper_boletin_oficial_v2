@@ -1,3 +1,4 @@
+attrs==21.2.0
 beautifulsoup4==4.10.0
 black==21.10b0
 certifi==2021.10.8
@@ -14,6 +15,7 @@ docker==5.0.3
 fsspec==2021.11.0
 HeapDict==1.0.1
 idna==3.3
+iniconfig==1.1.1
 Jinja2==3.0.3
 locket==0.2.1
 MarkupSafe==2.0.1
@@ -26,12 +28,15 @@ partd==1.2.0
 pathspec==0.9.0
 pendulum==2.1.2
 platformdirs==2.4.0
+pluggy==1.0.0
 prefect==0.15.9
 psutil==5.8.0
 psycopg2==2.9.2
+py==1.11.0
 pydantic==1.8.2
 Pygments==2.10.0
 pyparsing==3.0.6
+pytest==6.2.5
 python-box==5.4.1
 python-dateutil==2.8.2
 python-slugify==5.0.2

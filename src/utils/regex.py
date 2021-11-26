@@ -16,3 +16,14 @@ def aplicar_regex_group(texto, pattern):
         exit(1)
 
 
+def get_fecha_from_str(texto):
+    fecha = re.findall(r"\d{4}-\d{2}-\d{2}", texto)
+    if fecha:
+        fecha = fecha[0]
+        return fecha
+    else:
+        return None
+
+
+def get_primera_ocurrencia_texto_split(texto, sep='/'):
+    return texto.split(sep)[0]

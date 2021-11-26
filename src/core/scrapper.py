@@ -1,55 +1,28 @@
 from datetime import datetime
-from logging import log
 
-import requests
-from bs4 import BeautifulSoup
-
-from ..db.postgre import insert, Advice_raw
-from ..utils.conversion import reemplazar
+from ..core.etl.extractor import (
+    crear_advices_raw,
+    get_page_text,
+    get_title_subtitle_body,
+    post_http,
+)
 from ..utils.logger import loggear
-from ..utils.regex import aplicar_regex_group, PATTERN_TITULO_ID_AVISO
 
 today = datetime.today().strftime("%Y-%m-%d")
-url = "https://boletin.tucuman.gov.ar/boletin/view"
-
-headers = {
-    "Content-Type": "application/x-www-form-urlencoded",
-}
 
 
-def run(fecha: str = today):
+def extraer(date: str = today):
     loggear(mensaje="Iniciando scrapper", tipo="info")
-    data = []
+    loggear(mensaje="Iniciando extractor", tipo="info")
 
-    payload = f"fechaBoletin={fecha}"
-    response = requests.request("POST", url, headers=headers, data=payload)
+    page_raw = post_http(date)
+    page_text = get_page_text(page_raw)
+    titles, subtitles, bodies = get_title_subtitle_body(page_text)
 
-    soup = BeautifulSoup(response.text, features="html.parser")
-    notices = soup.find_all("article", class_="blog-post")[1]
-
-    titles = notices.findChildren(
-        "h3", class_="pt-5 pb-4 mb-4 fst-italic border-bottom"
-    )
-    subtitles = notices.findChildren("h2", class_="blog-post-title")
-    bodies = notices.findChildren("p", class_="font-monospace")
-
-    if len(titles) != len(subtitles) != len(bodies):
-        loggear(mensaje="Error en el scrapper", tipo="error")
-        return
-
-    for i in range(len(titles)):
-        title = titles[i].text.strip()
-        subtitle = subtitles[i].text.strip()
-        body = bodies[i].text.strip()
-
-        data.append(Advice_raw(title=title, subtitle=subtitle))
-
-    return data
-        # aux = aplicar_regex_group(texto=title, pattern=PATTERN_TITULO_ID_AVISO)
-        # nro_aviso = reemplazar(aux, ".", "", fuction=int)
+    data_raw = crear_advices_raw(titles, subtitles, bodies)
+    return data_raw
 
 
-
-def save_data(data: list):
-    for i in data:
-        insert(i)
+def transformator(data_raw: list):
+    loggear(mensaje="Iniciando transformator", tipo="info")
+    return data_raw
