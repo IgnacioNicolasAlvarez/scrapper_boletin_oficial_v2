@@ -17,8 +17,14 @@ def post_http(fecha):
 
 
 def get_page_text(text):
-    soup = BeautifulSoup(text, features="html.parser")
-    notices = soup.find_all("article", class_="blog-post")[1]
+    notices = []
+    soup = None
+    try:
+        soup = BeautifulSoup(text, features="html.parser")
+        notices = soup.find_all("article", class_="blog-post")[1]
+    except Exception as e:
+        loggear("ERROR: Crear objeto Soup", "error")
+        exit(1)
     return notices
 
 

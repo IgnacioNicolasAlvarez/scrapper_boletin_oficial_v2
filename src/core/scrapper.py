@@ -15,7 +15,7 @@ def extraer(date: str = today):
     loggear(mensaje="Iniciando scrapper", tipo="info")
     loggear(mensaje="Iniciando extractor", tipo="info")
 
-    page_raw = post_http(date)
+    page_raw, _ = post_http(date)
     page_text = get_page_text(page_raw)
     titles, subtitles, bodies = get_title_subtitle_body(page_text)
 
