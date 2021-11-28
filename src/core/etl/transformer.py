@@ -5,6 +5,7 @@ from src.utils.regex import (
     PATTERN_TITULO_ID_AVISO,
 )
 from src.utils.logger import loggear
+from src.db.postgre import Advice
 
 
 def get_fecha_aviso_from_subtitle(subtitle):
@@ -40,5 +41,20 @@ def get_numero_aviso_from_title(title):
         print(f"Ha ocurrido un error al aplicar el regex al titulo {title}:  {str(e)}")
         loggear(
             mensaje=f"Ha ocurrido un error al aplicar el regex al titulo {title}:  {str(e)}",
+            tipo="error",
+        )
+
+
+def crear_advice(fecha_aviso, tipo_aviso, numero_aviso) -> Advice:
+    try:
+        return Advice(
+            fecha_aviso=fecha_aviso, tipo_aviso=tipo_aviso, numero_aviso=numero_aviso
+        )
+    except Exception as e:
+        print(
+            f"Ha ocurrido un error al crear una instancia de Advice con los argumentos: {fecha_aviso}, {tipo_aviso}, {numero_aviso}:  {str(e)}"
+        )
+        loggear(
+            mensaje=f"Ha ocurrido un error al crear una instancia de Advice con los argumentos: {fecha_aviso}, {tipo_aviso}, {numero_aviso}:  {str(e)}",
             tipo="error",
         )

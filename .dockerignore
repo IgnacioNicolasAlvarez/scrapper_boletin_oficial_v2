@@ -5,3 +5,4 @@ __pycache__
 log.log
 docker-compose.yml
 .dockerignore
+.pytest_cache

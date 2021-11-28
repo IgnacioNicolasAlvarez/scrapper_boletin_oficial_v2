@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
+import pendulum
 
 from prefect import Flow, task
 from prefect.schedules import IntervalSchedule
@@ -7,7 +8,7 @@ from ..utils.logger import loggear
 from . import scrapper
 
 schedule = IntervalSchedule(
-    start_date=datetime.utcnow() + timedelta(seconds=1),
+    start_date=pendulum.now("America/Argentina/Buenos_Aires").add(seconds=1),
     interval=timedelta(days=1),
 )
 
@@ -32,7 +33,7 @@ def transform(data_raw):
     try:
         loggear(mensaje="Iniciando Transformacion", tipo="info")
         # transformacion
-        data_transformed = data_raw
+        data_transformed = scrapper.transformar(data_raw)
         loggear(mensaje="Finalizando Transformacion", tipo="info")
         return data_transformed
     except Exception as e:
@@ -44,7 +45,7 @@ def transform(data_raw):
 def load(transformed_data):
     try:
         loggear(mensaje="Iniciando Carga", tipo="info")
-        scrapper.save_data(transformed_data)
+        scrapper.cargar(transformed_data)
         loggear(mensaje="Finalizando Carga", tipo="info")
     except Exception as e:
         loggear(mensaje=f"Error: {e}", tipo="error")

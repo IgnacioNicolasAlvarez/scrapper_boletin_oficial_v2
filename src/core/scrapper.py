@@ -6,6 +6,13 @@ from ..core.etl.extractor import (
     get_title_subtitle_body,
     post_http,
 )
+from ..core.etl.transformer import (
+    crear_advice,
+    get_fecha_aviso_from_subtitle,
+    get_numero_aviso_from_title,
+    get_tipo_aviso_from_subtitle,
+)
+from ..core.etl.loader import save_en_postgres
 from ..utils.logger import loggear
 
 today = datetime.today().strftime("%Y-%m-%d")
@@ -20,9 +27,27 @@ def extraer(date: str = today):
     titles, subtitles, bodies = get_title_subtitle_body(page_text)
 
     data_raw = crear_advices_raw(titles, subtitles, bodies)
+    loggear(mensaje="Finalizando extractor", tipo="info")
     return data_raw
 
 
-def transformator(data_raw: list):
+def transformar(data_raw: list):
     loggear(mensaje="Iniciando transformator", tipo="info")
-    return data_raw
+    data = []
+    for advice in data_raw:
+
+        fecha_aviso = get_fecha_aviso_from_subtitle(advice.subtitle)
+        tipo_aviso = get_tipo_aviso_from_subtitle(advice.subtitle)
+        numero_aviso = get_numero_aviso_from_title(advice.title)
+        data.append(crear_advice(fecha_aviso, tipo_aviso, numero_aviso))
+
+    loggear(mensaje="Finalizando transformator", tipo="info")
+    return data
+
+
+def cargar(data_transformed: list):
+    loggear(mensaje="Iniciando cargador", tipo="info")
+    loggear(mensaje=f"Cargando {len(data_transformed)} avisos", tipo="info")
+    for advice in data_transformed:
+        save_en_postgres(advice)
+    loggear(mensaje="Finalizando cargador", tipo="info")
