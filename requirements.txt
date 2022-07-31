@@ -31,7 +31,7 @@ platformdirs==2.4.0
 pluggy==1.0.0
 prefect==0.15.9
 psutil==5.8.0
-psycopg2==2.9.2
+psycopg2-binary
 py==1.11.0
 pydantic==1.8.2
 Pygments==2.10.0

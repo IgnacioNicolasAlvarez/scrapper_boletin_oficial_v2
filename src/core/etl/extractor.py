@@ -11,7 +11,7 @@ def post_http(fecha):
     headers = {
         "Content-Type": "application/x-www-form-urlencoded",
     }
-    payload = f"fechaBoletin={fecha}"
+    payload = f"fechaBoletin0={fecha}"
     response = requests.request("POST", url, headers=headers, data=payload)
     return response.text, response.status_code
 
